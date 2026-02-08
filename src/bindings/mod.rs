@@ -1,2 +1,2 @@
-pub mod polars_bindings;
 pub mod numpy_bindings;
+pub mod polars_bindings;

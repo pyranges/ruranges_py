@@ -1,10 +1,10 @@
-# ruranges - blazing-fast interval algebra for NumPy
+# ruranges-py - blazing-fast interval algebra for NumPy
 
-ruranges is a thin Python wrapper around a set of Rust kernels that implement common genomic / interval algorithms at native speed. All public functions accept and return plain NumPy arrays so you can drop the results straight into your existing Python data-science stack.
+ruranges-py is the Python bindings package for `ruranges-core`, a separate Rust crate/repo that implements common genomic / interval algorithms at native speed. All public functions accept and return plain NumPy arrays so you can drop the results straight into your existing Python data-science stack.
 
 ---
 
-## Why ruranges?
+## Why ruranges-py?
 
 * Speed: heavy kernels in Rust compiled with --release.
 * Zero copy: results are numpy views whenever possible.
@@ -16,9 +16,31 @@ ruranges is a thin Python wrapper around a set of Rust kernels that implement co
 ## Installation
 
 ```bash
-pip install ruranges                # PyPI
+pip install ruranges-py                # PyPI
 # or
-pip install git+https://github.com/your-org/ruranges.git
+pip install git+https://github.com/your-org/ruranges-py.git
+```
+
+### Development environment (from local checkout)
+
+`ruranges-py` expects the sibling core repo at `../ruranges-core` (third repo):
+
+```bash
+cd ~/code
+git clone <your-remote>/ruranges-core
+git clone <your-remote>/ruranges-py
+
+cd ~/code/ruranges-py
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+pip install maturin
+maturin develop --release
+```
+
+Quick check:
+```bash
+python -c "import ruranges_py; print(ruranges_py.__version__)"
 ```
 
 ---
@@ -46,7 +68,7 @@ Simple example:
 ```python
 import pandas as pd
 import numpy as np
-from ruranges import overlaps
+from ruranges_py import overlaps
 
 df1 = pd.DataFrame({
     "chr": ["chr1", "chr1", "chr2"],
@@ -116,7 +138,7 @@ print(df2.iloc[idx2])
 
 ```python
 import numpy as np
-from ruranges import nearest
+from ruranges_py import nearest
 
 starts  = np.array([1, 10, 30], dtype=np.int32)
 ends    = np.array([5, 15, 35], dtype=np.int32)
@@ -150,7 +172,7 @@ Set direction to "forward" or "backward" to restrict to one side.
 
 ```python
 import numpy as np
-from ruranges import subtract
+from ruranges_py import subtract
 
 starts  = np.array([0, 10], dtype=np.int32)
 ends    = np.array([10, 20], dtype=np.int32)

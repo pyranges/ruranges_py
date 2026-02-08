@@ -1210,7 +1210,7 @@ def _resolve_rust_fn(
     except KeyError as exc:
         raise TypeError(f"Unsupported dtype pair: {grp_dt}, {pos_dt}") from exc
 
-    rust_mod = importlib.import_module(".ruranges", package="ruranges")
+    rust_mod = importlib.import_module(".ruranges_py", package="ruranges_py")
     rust_fn = getattr(rust_mod, f"{prefix}_{suffix}")
     return rust_fn, tgt_grp, tgt_pos
 

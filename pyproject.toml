@@ -3,7 +3,7 @@ requires = ["maturin>=1.7,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "ruranges"
+name = "ruranges-py"
 dependencies = ["numpy"]
 requires-python = ">=3.12"
 classifiers = [
@@ -14,11 +14,12 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-version = "0.0.13"
+version = "0.2.0"
 
 [tool.maturin]
-module-name = "ruranges"
-features = ["pyo3/extension-module"]
+module-name = "ruranges_py"
+# Build the extension with Cargo feature that enables pyo3/extension-module.
+features = ["python-module"]
 
 authors = [
     { name = "Endre Bakken Stovner", email = "endrebak@pm.me" }
@@ -30,4 +31,4 @@ manylinux = "manylinux_2_28"
 strip = true
 
 [project.urls]
-Repository = "https://github.com/pyranges/ruranges"
+Repository = "https://github.com/pyranges/ruranges-py"

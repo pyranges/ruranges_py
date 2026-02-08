@@ -1,5 +1,5 @@
+use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
-use numpy::{IntoPyArray, PyReadonlyArray1, PyArray1};
 use rustc_hash::FxHashMap;
 
 use crate::complement_single::sweep_line_complement;
@@ -8,14 +8,14 @@ macro_rules! define_complement_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {
         #[pyfunction]
         #[pyo3(signature = (
-            groups,
-            starts,
-            ends,
-            chrom_len_ids,
-            chrom_lens,
-            slack     = 0,
-            include_first_interval = false
-        ))]
+                    groups,
+                    starts,
+                    ends,
+                    chrom_len_ids,
+                    chrom_lens,
+                    slack     = 0,
+                    include_first_interval = false
+                ))]
         #[allow(non_snake_case)]
         pub fn $fname(
             py: Python<'_>,
@@ -56,10 +56,10 @@ macro_rules! define_complement_numpy {
             );
 
             Ok((
-                out_chrs  .into_pyarray(py).to_owned().into(),
+                out_chrs.into_pyarray(py).to_owned().into(),
                 out_starts.into_pyarray(py).to_owned().into(),
-                out_ends  .into_pyarray(py).to_owned().into(),
-                out_idx   .into_pyarray(py).to_owned().into(),
+                out_ends.into_pyarray(py).to_owned().into(),
+                out_idx.into_pyarray(py).to_owned().into(),
             ))
         }
     };
@@ -73,6 +73,6 @@ define_complement_numpy!(complement_numpy_u32_i16, u32, i16);
 define_complement_numpy!(complement_numpy_u16_i64, u16, i64);
 define_complement_numpy!(complement_numpy_u16_i32, u16, i32);
 define_complement_numpy!(complement_numpy_u16_i16, u16, i16);
-define_complement_numpy!(complement_numpy_u8_i64,  u8,  i64);
-define_complement_numpy!(complement_numpy_u8_i32,  u8,  i32);
-define_complement_numpy!(complement_numpy_u8_i16,  u8,  i16);
+define_complement_numpy!(complement_numpy_u8_i64, u8, i64);
+define_complement_numpy!(complement_numpy_u8_i32, u8, i32);
+define_complement_numpy!(complement_numpy_u8_i16, u8, i16);
