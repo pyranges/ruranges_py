@@ -18,7 +18,7 @@ version = "0.0.15"
 
 [tool.maturin]
 module-name = "ruranges"
-features = ["pyo3/extension-module"]
+features = ["python-module", "backend-numpy"]
 
 authors = [
     { name = "Endre Bakken Stovner", email = "endrebak@pm.me" }

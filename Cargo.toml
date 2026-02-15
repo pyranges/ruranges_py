@@ -8,13 +8,18 @@ edition = "2021"
 name = "ruranges"
 crate-type = ["cdylib", "rlib"]
 
+[features]
+default = ["backend-numpy"]
+backend-numpy = ["dep:numpy"]
+python-module = ["pyo3/extension-module"]
+
 [dependencies]
 radsort = "0.1.1"
 rustc-hash = "2.1.0"
 num-traits = "0.2.19"
 
-pyo3 = { version = "0.26.0", features = ["extension-module"], optional = false }
-numpy = { version = "0.26.0", optional = false }
+pyo3 = { version = "0.26.0", optional = false }
+numpy = { version = "0.26.0", optional = true }
 
 # polars = { version = "0.46.0", features = ["csv", "lazy", "dtype-categorical"], optional = false}
 # rust-htslib = { version = "0.49.0", optional = false}

@@ -1,3 +1,5 @@
+#![cfg(feature = "backend-numpy")]
+
 use std::collections::HashMap;
 use std::str::FromStr;
 
