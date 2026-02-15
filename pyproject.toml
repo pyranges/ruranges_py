@@ -3,7 +3,7 @@ requires = ["maturin>=1.7,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "ruranges-py"
+name = "ruranges"
 dependencies = ["numpy"]
 requires-python = ">=3.12"
 classifiers = [
@@ -14,7 +14,7 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-version = "0.2.0"
+version = "0.1.0"
 
 [tool.maturin]
 module-name = "ruranges.ruranges"
