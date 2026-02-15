@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 
-use crate::spliced_subsequence::{spliced_subseq, spliced_subseq_multi};
+use ruranges_core::spliced_subsequence::{spliced_subseq, spliced_subseq_multi};
 
 /// -------------------------------------------------------------------------
 /// single-slice wrappers

@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 
-use crate::extend;
+use ruranges_core::extend;
 
 macro_rules! define_extend_numpy {
     ($fname:ident, $grp_ty:ty, $pos_ty:ty) => {

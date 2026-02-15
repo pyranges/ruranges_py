@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::tile::tile;
+use ruranges_core::tile::tile;
 
 macro_rules! define_tile_numpy {
     ($fname:ident, $pos_ty:ty) => {

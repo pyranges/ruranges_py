@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::sorts;
+use ruranges_core::sorts;
 
 macro_rules! define_sort_intervals_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::complement::sweep_line_non_overlaps;
+use ruranges_core::complement::sweep_line_non_overlaps;
 
 macro_rules! define_complement_overlaps_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 
-use crate::split::sweep_line_split;
+use ruranges_core::split::sweep_line_split;
 
 macro_rules! define_split_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

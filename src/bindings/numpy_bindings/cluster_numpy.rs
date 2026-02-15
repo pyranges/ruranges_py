@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::cluster::sweep_line_cluster;
+use ruranges_core::cluster::sweep_line_cluster;
 
 macro_rules! define_cluster_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

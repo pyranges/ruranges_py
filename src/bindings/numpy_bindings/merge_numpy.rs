@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::merge::sweep_line_merge;
+use ruranges_core::merge::sweep_line_merge;
 
 macro_rules! define_merge_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

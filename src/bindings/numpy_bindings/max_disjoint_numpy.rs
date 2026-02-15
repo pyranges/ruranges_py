@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::max_disjoint::max_disjoint;
+use ruranges_core::max_disjoint::max_disjoint;
 
 macro_rules! define_max_disjoint_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

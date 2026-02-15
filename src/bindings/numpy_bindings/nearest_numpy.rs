@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::nearest::nearest;
+use ruranges_core::nearest::nearest;
 
 macro_rules! define_nearest_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

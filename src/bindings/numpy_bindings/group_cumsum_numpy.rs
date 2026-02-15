@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 
-use crate::group_cumsum::sweep_line_cumsum;
+use ruranges_core::group_cumsum::sweep_line_cumsum;
 
 macro_rules! define_cumsum_numpy {
     ($fname:ident, $grp_ty:ty, $pos_ty:ty) => {

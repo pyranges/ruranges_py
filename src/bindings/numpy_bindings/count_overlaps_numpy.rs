@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::overlaps::count_overlaps;
+use ruranges_core::overlaps::count_overlaps;
 
 macro_rules! define_count_overlaps_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

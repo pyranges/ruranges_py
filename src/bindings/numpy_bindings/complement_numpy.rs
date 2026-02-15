@@ -2,7 +2,7 @@ use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 use rustc_hash::FxHashMap;
 
-use crate::complement_single::sweep_line_complement;
+use ruranges_core::complement_single::sweep_line_complement;
 
 macro_rules! define_complement_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

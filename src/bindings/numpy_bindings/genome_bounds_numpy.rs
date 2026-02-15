@@ -2,7 +2,7 @@ use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{exceptions::PyValueError, prelude::*};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::outside_bounds::outside_bounds;
+use ruranges_core::outside_bounds::outside_bounds;
 
 macro_rules! define_genome_bounds_numpy {
     ($fname:ident, $grp_ty:ty, $pos_ty:ty) => {

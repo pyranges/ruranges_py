@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 
-use crate::boundary::sweep_line_boundary;
+use ruranges_core::boundary::sweep_line_boundary;
 
 macro_rules! define_boundary_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

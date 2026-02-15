@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::overlaps::overlaps;
+use ruranges_core::overlaps::overlaps;
 
 macro_rules! define_chromsweep_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {

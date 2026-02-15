@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::subtract::sweep_line_subtract;
+use ruranges_core::subtract::sweep_line_subtract;
 
 macro_rules! define_subtract_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {
