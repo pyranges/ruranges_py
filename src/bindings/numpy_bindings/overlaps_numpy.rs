@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::overlaps_simple::sweep_line_overlaps;
+use crate::overlaps::overlaps;
 
 macro_rules! define_chromsweep_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {
@@ -27,7 +27,7 @@ macro_rules! define_chromsweep_numpy {
             let starts_slice2 = starts2.as_slice()?;
             let ends_slice2 = ends2.as_slice()?;
 
-            let (idx1_usize, idx2_usize) = sweep_line_overlaps(
+            let (idx1, idx2) = overlaps(
                 chrs_slice,
                 starts_slice,
                 ends_slice,
@@ -36,21 +36,9 @@ macro_rules! define_chromsweep_numpy {
                 ends_slice2,
                 slack,
                 overlap_type,
+                sort_output,
                 contained,
-                false,
             );
-
-            let mut pairs: Vec<(u32, u32)> = idx1_usize
-                .into_iter()
-                .zip(idx2_usize.into_iter())
-                .map(|(a, b)| (a as u32, b as u32))
-                .collect();
-
-            if sort_output {
-                pairs.sort_unstable_by_key(|(a, b)| (*a, *b));
-            }
-
-            let (idx1, idx2): (Vec<u32>, Vec<u32>) = pairs.into_iter().unzip();
             Ok((
                 idx1.into_pyarray(py).to_owned().into(),
                 idx2.into_pyarray(py).to_owned().into(),

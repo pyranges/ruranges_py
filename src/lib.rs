@@ -13,7 +13,6 @@ pub mod merge;
 pub mod nearest;
 pub mod outside_bounds;
 pub mod overlaps;
-pub mod overlaps_simple;
 pub mod ruranges_structs;
 pub mod sorts;
 pub mod spliced_subsequence;
