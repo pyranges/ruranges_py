@@ -55,239 +55,71 @@ impl FromStr for Direction {
 #[pymodule]
 #[pyo3(name = "ruranges")]
 fn ruranges(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(map_to_global_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(map_to_global_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(map_to_global_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(chromsweep_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(chromsweep_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(chromsweep_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(nearest_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(nearest_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(nearest_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(nearest_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(subtract_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(subtract_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(subtract_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(subtract_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(complement_overlaps_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(count_overlaps_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(count_overlaps_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(sort_intervals_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(sort_intervals_numpy_u32_i64, m)?)?;
+    m.add_function(wrap_pyfunction!(sort_groups_numpy_u32, m)?)?;
 
-    m.add_function(wrap_pyfunction!(cluster_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(cluster_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(cluster_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(cluster_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(merge_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(merge_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(merge_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(merge_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(max_disjoint_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(max_disjoint_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(complement_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(complement_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(complement_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(complement_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(window_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(window_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(window_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(window_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(tile_numpy_i64, m)?)?;
     m.add_function(wrap_pyfunction!(tile_numpy_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(tile_numpy_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(tile_numpy_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(boundary_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(boundary_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(boundary_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(boundary_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u8_i16, m)?)?;
-
+    m.add_function(wrap_pyfunction!(spliced_subsequence_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(
-        spliced_subsequence_multi_numpy_u64_i64,
+        spliced_subsequence_multi_numpy_u32_i32,
         m
     )?)?;
     m.add_function(wrap_pyfunction!(
         spliced_subsequence_multi_numpy_u32_i64,
         m
     )?)?;
-    m.add_function(wrap_pyfunction!(
-        spliced_subsequence_multi_numpy_u32_i32,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(
-        spliced_subsequence_multi_numpy_u32_i16,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(
-        spliced_subsequence_multi_numpy_u16_i64,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(
-        spliced_subsequence_multi_numpy_u16_i32,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(
-        spliced_subsequence_multi_numpy_u16_i16,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_multi_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_multi_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(spliced_subsequence_multi_numpy_u8_i16, m)?)?;
 
-    m.add_function(wrap_pyfunction!(extend_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(extend_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(extend_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(extend_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(split_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(split_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(split_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(split_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(genome_bounds_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(genome_bounds_numpy_u32_i64, m)?)?;
 
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u64_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(group_cumsum_numpy_u32_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u32_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u16_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u16_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u16_i16, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u8_i64, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u8_i32, m)?)?;
-    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u8_i16, m)?)?;
+    m.add_function(wrap_pyfunction!(group_cumsum_numpy_u32_i64, m)?)?;
 
     Ok(())
 }

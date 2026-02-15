@@ -4,7 +4,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from importlib.metadata import version
-__version__: str = version("ruranges-py")
+__version__: str = version("ruranges")
 
 
 # Define a type variable for groups that allows only int8, int16, or int32.
@@ -17,58 +17,35 @@ RangeInt = TypeVar("RangeInt", bound=np.integer)
 # dtype-suffix map shared by every operation
 # (group_dtype, range_dtype)  →  (suffix, group_target_dtype, range_target_dtype)
 _SUFFIX_TABLE = {
-    ("u8", None):  (None, "u8", np.uint8),
-    ("u16", None): (None, "u16", np.uint16),
-    ("u32", None): (None, "u32", np.uint32),
-
-    (None, np.dtype(np.int8)):  ("i16", None, np.int16),
-    (None, np.dtype(np.int16)): ("i16", None, np.int16),
+    (np.dtype(np.uint32), None): ("u32", np.uint32, None),
     (None, np.dtype(np.int32)): ("i32", None, np.int32),
     (None, np.dtype(np.int64)): ("i64", None, np.int64),
-    # ─── uint8 groups ────────────────────────────────────────────────
-    (np.dtype(np.uint8), np.dtype(np.int8)): ("u8_i16", np.uint8, np.int16),
-    (np.dtype(np.uint8), np.dtype(np.int16)): ("u8_i16", np.uint8, np.int16),
-    (np.dtype(np.uint8), np.dtype(np.int32)): ("u8_i32", np.uint8, np.int32),
-    (np.dtype(np.uint8), np.dtype(np.int64)): ("u8_i64", np.uint8, np.int64),
-    # ─── uint16 groups ───────────────────────────────────────────────
-    (np.dtype(np.uint16), np.dtype(np.int8)): ("u16_i16", np.uint16, np.int16),
-    (np.dtype(np.uint16), np.dtype(np.int16)): ("u16_i16", np.uint16, np.int16),
-    (np.dtype(np.uint16), np.dtype(np.int32)): ("u16_i32", np.uint16, np.int32),
-    (np.dtype(np.uint16), np.dtype(np.int64)): ("u16_i64", np.uint16, np.int64),
-    # ─── uint32 groups ───────────────────────────────────────────────
-    (np.dtype(np.uint32), np.dtype(np.int8)): ("u32_i16", np.uint32, np.int16),
-    (np.dtype(np.uint32), np.dtype(np.int16)): ("u32_i16", np.uint32, np.int16),
     (np.dtype(np.uint32), np.dtype(np.int32)): ("u32_i32", np.uint32, np.int32),
     (np.dtype(np.uint32), np.dtype(np.int64)): ("u32_i64", np.uint32, np.int64),
-    # ─── uint64 groups ───────────────────────────────────────────────
-    (np.dtype(np.uint64), np.dtype(np.int8)): ("u64_i64", np.uint64, np.int64),
-    (np.dtype(np.uint64), np.dtype(np.int16)): ("u64_i64", np.uint64, np.int64),
-    (np.dtype(np.uint64), np.dtype(np.int32)): ("u64_i64", np.uint64, np.int64),
-    (np.dtype(np.uint64), np.dtype(np.int64)): ("u64_i64", np.uint64, np.int64),
 }
 
 RETURN_SIGNATURES: dict[str, tuple[str, ...]] = {
-    "chromsweep_numpy": ("grp", "grp"),
-    "nearest_numpy": ("grp", "grp", "pos"),
-    "subtract_numpy": ("grp", "pos", "pos"),
-    "complement_overlaps_numpy": ("grp",),
+    "chromsweep_numpy": ("index", "index"),
+    "nearest_numpy": ("index", "index", "dist"),
+    "subtract_numpy": ("index", "coord", "coord"),
+    "complement_overlaps_numpy": ("index",),
     "count_overlaps_numpy": ("count",),
-    "sort_groups_numpy": ("idx",),
-    "sort_intervals_numpy": ("idx",),
-    "cluster_numpy": ("idx", "count"),
-    "max_disjoint_numpy": ("idx",),
-    "merge_numpy": ("grp", "pos", "pos", "count"),
-    "window_numpy": ("grp", "pos", "pos"),
-    "tile_numpy": ("grp", "pos", "pos", "fraction"),
-    "complement_numpy": ("grp", "pos", "pos", "index"),
-    "boundary_numpy": ("index", "pos", "pos", "count"),
-    "spliced_subsequence_numpy": ("index", "pos", "pos", "_strand"),
-    "spliced_subsequence_multi_numpy": ("index", "pos", "pos", "_strand"),
-    "split_numpy": ("index", "pos", "pos"),
-    "extend_numpy": ("pos", "pos"),
-    "genome_bounds_numpy": ("index", "pos", "pos"),
-    "group_cumsum_numpy": ("index", "pos", "pos"),
-    "map_to_global_numpy": ("index", "pos", "pos", "strand"),
+    "sort_groups_numpy": ("index",),
+    "sort_intervals_numpy": ("index",),
+    "cluster_numpy": ("label", "index"),
+    "max_disjoint_numpy": ("index",),
+    "merge_numpy": ("index", "coord", "coord", "count"),
+    "window_numpy": ("index", "coord", "coord"),
+    "tile_numpy": ("index", "coord", "coord", "fraction"),
+    "complement_numpy": ("group", "coord", "coord", "index"),
+    "boundary_numpy": ("index", "coord", "coord", "count"),
+    "spliced_subsequence_numpy": ("index", "coord", "coord", "_strand"),
+    "spliced_subsequence_multi_numpy": ("index", "coord", "coord", "_strand"),
+    "split_numpy": ("index", "coord", "coord"),
+    "extend_numpy": ("coord", "coord"),
+    "genome_bounds_numpy": ("index", "coord", "coord"),
+    "group_cumsum_numpy": ("index", "metric", "metric"),
+    "map_to_global_numpy": ("index", "coord", "coord", "strand"),
 }
 
 
@@ -438,10 +415,7 @@ def sort_groups(
     *The heavy lifting happens in Rust; this wrapper only dispatches to the
     correct concrete wrapper based on dtypes.*
     """
-    return _dispatch_unary(
-        "sort_groups_numpy",  # selects the Rust wrapper
-        groups=groups,
-    )
+    return _dispatch_groups_only("sort_groups_numpy", groups)
 
 
 def cluster(
@@ -1184,35 +1158,133 @@ def validate_groups(
     return groups
 
 
-# ---- zero-copy cast -------------------------------------------------
-def _cast(
-    a: NDArray,
-    target: np.dtype,
-) -> NDArray:
-    """Return *a* unchanged if dtype already matches, else cast with copy=False."""
-    return (
-        a if a.dtype == target else a.astype(target, copy=False)
-    )  # ndarray.astype will
-    # reuse the buffer when
-    # copy=False and the
-    # conversion is safe :contentReference[oaicite:2]{index=2}
+# ---- dtype normalization and dispatch ---------------------------------
+_CORE_GROUP_DTYPE = np.dtype(np.uint32)
+_GROUPLESS_PREFIXES = {"tile_numpy"}
+_BINARY_SCALAR_PREFIXES = {
+    "chromsweep_numpy",
+    "nearest_numpy",
+    "complement_overlaps_numpy",
+    "count_overlaps_numpy",
+}
+_UNARY_POS_SCALAR_KEYS = {"slack", "window_size", "tile_size", "ext_3", "ext_5"}
 
 
-# ---- resolve the correct Rust wrapper ------------------------------
 def _resolve_rust_fn(
     prefix: str,
-    grp_dt: np.dtype,
-    pos_dt: np.dtype,
-) -> tuple[Callable, np.dtype, np.dtype]:
-    """Look up (wrapper, target_grp_dt, target_pos_dt) or raise TypeError."""
+    grp_dt: np.dtype | None,
+    pos_dt: np.dtype | None,
+) -> tuple[Callable, np.dtype | None, np.dtype | None]:
     try:
         suffix, tgt_grp, tgt_pos = _SUFFIX_TABLE[(grp_dt, pos_dt)]
     except KeyError as exc:
         raise TypeError(f"Unsupported dtype pair: {grp_dt}, {pos_dt}") from exc
-
     rust_mod = importlib.import_module(".ruranges", package="ruranges")
-    rust_fn = getattr(rust_mod, f"{prefix}_{suffix}")
-    return rust_fn, tgt_grp, tgt_pos
+    return getattr(rust_mod, f"{prefix}_{suffix}"), tgt_grp, tgt_pos
+
+
+def _as_1d_array(a: NDArray | Sequence[Any], *, name: str) -> np.ndarray:
+    arr = np.asarray(a)
+    if arr.ndim != 1:
+        raise ValueError(f"`{name}` must be a 1-D array.")
+    return arr
+
+
+def _int_bounds(arr: np.ndarray, *, name: str) -> tuple[int, int]:
+    kind = arr.dtype.kind
+    if arr.size == 0:
+        return 0, 0
+    if kind in {"i", "u", "b"}:
+        return int(arr.min()), int(arr.max())
+    raise TypeError(f"`{name}` must be integer-like (int/uint/bool), got {arr.dtype}.")
+
+
+def _normalize_groups(groups: NDArray | Sequence[Any], *, name: str) -> np.ndarray:
+    arr = _as_1d_array(groups, name=name)
+    lo, hi = _int_bounds(arr, name=name)
+    if lo < 0:
+        raise TypeError(f"`{name}` must be non-negative.")
+    if hi > np.iinfo(np.uint32).max:
+        raise OverflowError(f"`{name}` values exceed uint32 range.")
+    return arr.astype(np.uint32, copy=False)
+
+
+def _to_signed(arr: np.ndarray, *, name: str, target: np.dtype) -> np.ndarray:
+    lo, hi = _int_bounds(arr, name=name)
+    info = np.iinfo(target)
+    if lo < int(info.min) or hi > int(info.max):
+        raise OverflowError(f"`{name}` values exceed {target} range.")
+    return arr.astype(target, copy=False)
+
+
+def _coerce_int(v: Any, *, name: str) -> int:
+    x = np.asarray(v)
+    if x.ndim != 0:
+        raise TypeError(f"`{name}` must be scalar.")
+    val = x.item()
+    if isinstance(val, (np.integer, int, np.bool_)):
+        val = int(val)
+    else:
+        raise TypeError(f"`{name}` must be an integer.")
+    return val
+
+
+def _choose_pos_dtype(min_value: int, max_value: int) -> np.dtype:
+    if min_value >= np.iinfo(np.int32).min and max_value <= np.iinfo(np.int32).max:
+        return np.dtype(np.int32)
+    if min_value >= np.iinfo(np.int64).min and max_value <= np.iinfo(np.int64).max:
+        return np.dtype(np.int64)
+    raise OverflowError("Coordinate values exceed int64 range.")
+
+
+def _lossless_cast(arr: np.ndarray, target: np.dtype) -> np.ndarray | None:
+    target = np.dtype(target)
+    try:
+        cast = arr.astype(target, copy=False)
+    except (TypeError, ValueError, OverflowError):
+        return None
+    try:
+        if np.array_equal(arr.astype(object), cast.astype(object)):
+            return cast
+    except Exception:
+        return None
+    return None
+
+
+def _restore_outputs(
+    prefix: str,
+    raw_out: Any,
+    roles: tuple[str, ...],
+    *,
+    grp_orig: np.dtype,
+    pos_orig: np.dtype,
+) -> Any:
+    def _restore(role: str, arr: np.ndarray) -> np.ndarray:
+        if role == "group":
+            cast = _lossless_cast(arr, grp_orig)
+            return cast if cast is not None else arr
+        if role == "coord":
+            cast = _lossless_cast(arr, pos_orig)
+            if cast is not None:
+                return cast
+            return arr
+        if role in {"dist", "metric"}:
+            cast = _lossless_cast(arr, pos_orig)
+            return cast if cast is not None else arr
+        return arr
+
+    if len(roles) == 1:
+        if not isinstance(raw_out, np.ndarray):
+            raise TypeError(f"{prefix!r} should return one ndarray; got {type(raw_out).__name__}")
+        return _restore(roles[0], raw_out)
+
+    if not isinstance(raw_out, tuple):
+        raw_out = (raw_out,)
+    if len(raw_out) != len(roles):
+        raise ValueError(
+            f"{prefix!r} declared {len(roles)} outputs but kernel returned {len(raw_out)}"
+        )
+    return tuple(_restore(role, arr) for role, arr in zip(roles, raw_out))
 
 
 def _dispatch_unary(
@@ -1223,28 +1295,57 @@ def _dispatch_unary(
     *extra_pos_args: Any,
     **extra_kw: Any,
 ) -> Any:
-    """Common body for functions that take one (chroms, starts, ends) trio."""
     roles = RETURN_SIGNATURES[prefix]
+    starts_arr = _as_1d_array(starts, name="starts")
+    ends_arr = _as_1d_array(ends, name="ends")
+    if len(starts_arr) != len(ends_arr):
+        raise ValueError("`starts` and `ends` must have the same length.")
 
-    length = check_array_lengths(starts, ends, groups)
+    scalar_vals: list[int] = []
+    pos_extra_arrays: list[tuple[str, np.ndarray]] = []
+    for k in _UNARY_POS_SCALAR_KEYS.intersection(extra_kw.keys()):
+        v = _coerce_int(extra_kw[k], name=k)
+        extra_kw[k] = v
+        scalar_vals.append(v)
 
-    groups_validated = validate_groups(length, groups)
+    if prefix == "complement_numpy":
+        chrom_ids = _normalize_groups(extra_kw["chrom_len_ids"], name="chrom_len_ids")
+        extra_kw["chrom_len_ids"] = chrom_ids
+        chrom_lens = _as_1d_array(extra_kw["chrom_lens"], name="chrom_lens")
+        pos_extra_arrays.append(("chrom_lens", chrom_lens))
+    elif prefix == "genome_bounds_numpy":
+        chrom_lengths = _as_1d_array(extra_kw["chrom_lengths"], name="chrom_lengths")
+        pos_extra_arrays.append(("chrom_lengths", chrom_lengths))
+    elif prefix == "spliced_subsequence_multi_numpy":
+        slice_starts = _as_1d_array(extra_kw["slice_starts"], name="slice_starts")
+        slice_ends = _as_1d_array(extra_kw["slice_ends"], name="slice_ends")
+        pos_extra_arrays.extend([("slice_starts", slice_starts), ("slice_ends", slice_ends)])
 
-    grp_orig: np.dtype = groups_validated.dtype
-    pos_orig: np.dtype = starts.dtype
+    mins_maxes = [_int_bounds(starts_arr, name="starts"), _int_bounds(ends_arr, name="ends")]
+    mins_maxes.extend(_int_bounds(arr, name=name) for name, arr in pos_extra_arrays)
+    min_v = min(m for m, _ in mins_maxes)
+    max_v = max(m for _, m in mins_maxes)
+    pos_t = _choose_pos_dtype(min(min_v, min(scalar_vals, default=0)), max(max_v, max(scalar_vals, default=0)))
 
-    rust_fn, grp_t, pos_t = _resolve_rust_fn(prefix, groups.dtype if groups is not None else None, starts.dtype)
+    starts_u = _to_signed(starts_arr, name="starts", target=pos_t)
+    ends_u = _to_signed(ends_arr, name="ends", target=pos_t)
+    for name, arr in pos_extra_arrays:
+        extra_kw[name] = _to_signed(arr, name=name, target=pos_t)
 
-    chroms_c = _cast(groups, grp_t) if groups is not None else None
-    starts_c = _cast(starts, pos_t)
-    ends_c = _cast(ends, pos_t)
+    pos_orig = starts_arr.dtype
+    grp_orig = np.asarray(groups).dtype if groups is not None else np.dtype(np.uint32)
 
-    if groups is not None:
-        raw = rust_fn(chroms_c, starts_c, ends_c, *extra_pos_args, **extra_kw)
+    if prefix in _GROUPLESS_PREFIXES:
+        rust_fn, _, _ = _resolve_rust_fn(prefix, None, pos_t)
+        raw = rust_fn(starts_u, ends_u, *extra_pos_args, **extra_kw)
     else:
-        raw = rust_fn(starts_c, ends_c, *extra_pos_args, **extra_kw)
+        g = np.zeros(len(starts_arr), dtype=np.uint32) if groups is None else _normalize_groups(groups, name="groups")
+        if len(g) != len(starts_arr):
+            raise ValueError("`groups` must have same length as coordinates.")
+        rust_fn, _, _ = _resolve_rust_fn(prefix, _CORE_GROUP_DTYPE, pos_t)
+        raw = rust_fn(g, starts_u, ends_u, *extra_pos_args, **extra_kw)
 
-    return cast_kernel_outputs(prefix, raw, roles, grp_t, pos_t, grp_orig, pos_orig)
+    return _restore_outputs(prefix, raw, roles, grp_orig=grp_orig, pos_orig=pos_orig)
 
 
 def _dispatch_binary(
@@ -1255,268 +1356,138 @@ def _dispatch_binary(
     groups2: NDArray | None,
     starts2: NDArray,
     ends2: NDArray,
-    *extra_pos: any,
-    **extra_kw: any,
-):
-    """Shared body for all two-interval-set operations with automatic
-    down-casting to minimal integer dtypes."""
-
-    length = check_array_lengths(starts, ends, groups)
-    length2 = check_array_lengths(starts2, ends2, groups2)
-
-    groups_validated = validate_groups(length, groups)
-    groups2_validated = validate_groups(length2, groups2)
-
-    # ------------------------------------------------------------------
-    # 1.  Remember caller-visible dtypes
-    # ------------------------------------------------------------------
-    grp_orig: np.dtype = groups_validated.dtype
-    pos_orig: np.dtype = starts.dtype
-
-    # ------------------------------------------------------------------
-    # 2.  Choose tightest common dtypes for groups and positions
-    # ------------------------------------------------------------------
-    grp_tmp = _common_integer_dtype(
-        groups_validated, groups2_validated
-    )  # signed/unsigned kept
-    pos_tmp = _common_integer_dtype(starts, ends, starts2, ends2)
-
-    # Slack range check (only if the caller supplied slack > 0)
-    slack = extra_kw.get("slack", 0)
-    try:
-        if slack:
-            check_min_max_with_slack(starts, ends, slack, pos_tmp)
-    except ValueError:
-        # Too narrow → fall back to original pos dtype
-        pos_tmp = pos_orig
-
-    # ------------------------------------------------------------------
-    # 3.  Now resolve the Rust kernel for the *temporary* dtypes
-    # ------------------------------------------------------------------
-    rust_fn, grp_t, pos_t = _resolve_rust_fn(prefix, grp_tmp, pos_tmp)
-
-    roles = RETURN_SIGNATURES[prefix]
-
-    # ------------------------------------------------------------------
-    # 4.  Cast inputs for the FFI call
-    # ------------------------------------------------------------------
-    g1 = groups_validated.astype(grp_t, copy=False)
-    g2 = groups2_validated.astype(grp_t, copy=False)
-    s1 = starts.astype(pos_t, copy=False)
-    e1 = ends.astype(pos_t, copy=False)
-    s2 = starts2.astype(pos_t, copy=False)
-    e2 = ends2.astype(pos_t, copy=False)
-
-    # ------------------------------------------------------------------
-    # 5.  Dispatch & post-process results
-    # ------------------------------------------------------------------
-    raw = rust_fn(g1, s1, e1, g2, s2, e2, *extra_pos, **extra_kw)
-
-    return cast_kernel_outputs(prefix, raw, roles, grp_t, pos_t, grp_orig, pos_orig)
-
-
-def cast_kernel_outputs(
-    prefix: str,
-    raw_out: Any,
-    roles: tuple[str, ...],
-    grp_t: np.dtype,
-    pos_t: np.dtype,
-    grp_orig: np.dtype,
-    pos_orig: np.dtype,
+    *extra_pos: Any,
+    **extra_kw: Any,
 ) -> Any:
-    """
-    Cast every array returned by a Rust kernel back to the caller-visible dtype.
+    roles = RETURN_SIGNATURES[prefix]
+    s1 = _as_1d_array(starts, name="starts")
+    e1 = _as_1d_array(ends, name="ends")
+    s2 = _as_1d_array(starts2, name="starts2")
+    e2 = _as_1d_array(ends2, name="ends2")
+    if len(s1) != len(e1):
+        raise ValueError("`starts` and `ends` must have the same length.")
+    if len(s2) != len(e2):
+        raise ValueError("`starts2` and `ends2` must have the same length.")
 
-    Parameters
-    ----------
-    prefix
-        Kernel name (used only for clearer error messages).
-    raw_out
-        Value returned by the Rust FFI stub – either a single ndarray *or*
-        a tuple of ndarrays.
-    roles
-        Tuple that labels each output position, e.g. ('grp', 'grp'),
-        ('grp', 'grp', 'pos'), or ('grp',) for single-output kernels.
-    grp_t / pos_t
-        Temporary dtypes used when **calling** the kernel
-        (unsigned for groups,  signed for positions).
-    grp_orig / pos_orig
-        Dtypes the Python API guarantees to the caller.
+    extra_pos = list(extra_pos)
+    scalar_vals: list[int] = []
+    if prefix in _BINARY_SCALAR_PREFIXES and extra_pos:
+        v = _coerce_int(extra_pos[0], name="slack")
+        extra_pos[0] = v
+        scalar_vals.append(v)
 
-    Returns
-    -------
-    Casted ndarray or tuple of ndarrays in the same shape as *raw_out*.
-    """
+    bounds = [
+        _int_bounds(s1, name="starts"),
+        _int_bounds(e1, name="ends"),
+        _int_bounds(s2, name="starts2"),
+        _int_bounds(e2, name="ends2"),
+    ]
+    min_v = min(m for m, _ in bounds)
+    max_v = max(m for _, m in bounds)
+    pos_t = _choose_pos_dtype(min(min_v, min(scalar_vals, default=0)), max(max_v, max(scalar_vals, default=0)))
 
-    def _restore(role: str, arr: np.ndarray) -> np.ndarray:
-        """Cast one array according to its semantic role."""
-        if role == "grp" and arr.dtype == grp_t:  # unsigned → caller dtype
-            return arr.astype(
-                grp_orig, copy=False
-            )  # zero-copy view :contentReference[oaicite:0]{index=0}
-        if role == "pos" and arr.dtype == pos_t:  # signed   → caller dtype
-            return arr.astype(
-                pos_orig, copy=False
-            )  # zero-copy view :contentReference[oaicite:1]{index=1}
-        return arr  # strand / dist stay
+    s1u = _to_signed(s1, name="starts", target=pos_t)
+    e1u = _to_signed(e1, name="ends", target=pos_t)
+    s2u = _to_signed(s2, name="starts2", target=pos_t)
+    e2u = _to_signed(e2, name="ends2", target=pos_t)
 
-    # ── SINGLE-OUTPUT KERNEL ────────────────────────────────────────────
-    if len(roles) == 1:  # API says 1 array
-        if not isinstance(
-            raw_out, np.ndarray
-        ):  # ndarray check :contentReference[oaicite:2]{index=2}
-            raise TypeError(
-                f"{prefix!r} should return one ndarray; got {type(raw_out).__name__}"
-            )
-        return _restore(roles[0], raw_out)
+    g1 = np.zeros(len(s1), dtype=np.uint32) if groups is None else _normalize_groups(groups, name="groups")
+    g2 = np.zeros(len(s2), dtype=np.uint32) if groups2 is None else _normalize_groups(groups2, name="groups2")
+    if len(g1) != len(s1):
+        raise ValueError("`groups` must have same length as first coordinate arrays.")
+    if len(g2) != len(s2):
+        raise ValueError("`groups2` must have same length as second coordinate arrays.")
 
-    # ── MULTI-OUTPUT KERNEL ─────────────────────────────────────────────
-    if not isinstance(raw_out, tuple):  # stray array → wrap
-        raw_out = (raw_out,)
-    if len(raw_out) != len(roles):  # arity guard
-        raise ValueError(
-            f"{prefix!r} declared {len(roles)} outputs but kernel returned "
-            f"{len(raw_out)}"
-        )
+    grp_orig = np.asarray(groups).dtype if groups is not None else np.dtype(np.uint32)
+    pos_orig = s1.dtype
+    rust_fn, _, _ = _resolve_rust_fn(prefix, _CORE_GROUP_DTYPE, pos_t)
+    raw = rust_fn(g1, s1u, e1u, g2, s2u, e2u, *extra_pos, **extra_kw)
+    return _restore_outputs(prefix, raw, roles, grp_orig=grp_orig, pos_orig=pos_orig)
 
-    # zip stops at the shorter iterable; arity already checked above :contentReference[oaicite:3]{index=3}
-    return tuple(_restore(role, arr) for role, arr in zip(roles, raw_out))
+
+def _dispatch_groups_only(prefix: str, groups: NDArray | Sequence[Any]) -> NDArray:
+    g = _normalize_groups(groups, name="groups")
+    grp_orig = np.asarray(groups).dtype
+    rust_fn, _, _ = _resolve_rust_fn(prefix, _CORE_GROUP_DTYPE, None)
+    raw = rust_fn(g)
+    if not isinstance(raw, np.ndarray):
+        raise TypeError(f"{prefix!r} should return one ndarray; got {type(raw).__name__}")
+    return raw
 
 
 def _dispatch_map_global_binary(
     prefix: str,
-    ex_tx, ex_local_start, ex_local_end, ex_fwd,                # left (exons)
-    q_tx, q_start, q_end, q_fwd,                                # right (queries)
-    ex_chr_code, ex_genome_start, ex_genome_end,                # extra
+    ex_tx, ex_local_start, ex_local_end, ex_fwd,
+    q_tx, q_start, q_end, q_fwd,
+    ex_chr_code, ex_genome_start, ex_genome_end,
     **extra_kw
 ):
-    """
-    Special-purpose dispatch function for map_to_global, 
-    so we don't rely on _dispatch_binary's argument ordering.
+    del extra_kw
+    roles = RETURN_SIGNATURES[prefix]
+    ex_start = _as_1d_array(ex_local_start, name="starts")
+    ex_end = _as_1d_array(ex_local_end, name="ends")
+    q_start_arr = _as_1d_array(q_start, name="starts2")
+    q_end_arr = _as_1d_array(q_end, name="ends2")
+    ex_genome_start_arr = _as_1d_array(ex_genome_start, name="genome_start2")
+    ex_genome_end_arr = _as_1d_array(ex_genome_end, name="genome_end2")
+    ex_fwd_arr = _as_1d_array(ex_fwd, name="strand")
+    q_fwd_arr = _as_1d_array(q_fwd, name="strand2")
 
-    Parameters
-    ----------
-    prefix : str
-        Rust kernel prefix, e.g. "map_to_global_numpy".
-    ex_tx, ex_local_start, ex_local_end : 1D arrays
-        The group, start, end arrays for exon (left) side.
-    ex_fwd : 1D bool array
-        Exon side's strand flags.
-    q_tx, q_start, q_end : 1D arrays
-        The group, start, end arrays for query (right) side.
-    q_fwd : 1D bool array
-        Query side's strand flags.
-    ex_chr_code, ex_genome_start, ex_genome_end : 1D arrays
-        Additional arrays needed by the Rust function.
-    **extra_kw
-        Extra arguments if needed (usually none).
+    left_len = len(ex_start)
+    right_len = len(q_start_arr)
+    if len(ex_end) != left_len:
+        raise ValueError("`starts` and `ends` must have same length.")
+    if len(q_end_arr) != right_len:
+        raise ValueError("`starts2` and `ends2` must have same length.")
+    if len(ex_genome_start_arr) != left_len or len(ex_genome_end_arr) != left_len:
+        raise ValueError("Genome start/end arrays must match exon length.")
+    if len(ex_fwd_arr) != left_len or len(q_fwd_arr) != right_len:
+        raise ValueError("Strand arrays must match corresponding table lengths.")
 
-    Returns
-    -------
-    keep_idx, out_start, out_end, out_strand_bool : NDArray
-        The 4 arrays returned by the "map_to_global_numpy" Rust kernel.
-    """
-    # ----------------------------------------------------------------------
-    # 0. Helpers: same ones you used in _dispatch_binary
-    # ----------------------------------------------------------------------
-    def check_array_lengths(*arrays):
-        # example length check used in your code
-        lengths = [len(a) for a in arrays if a is not None]
-        if not lengths:
-            return 0
-        if len(set(lengths)) > 1:
-            raise ValueError(f"Array length mismatch: {lengths}")
-        return lengths[0]
+    bounds = [
+        _int_bounds(ex_start, name="starts"),
+        _int_bounds(ex_end, name="ends"),
+        _int_bounds(q_start_arr, name="starts2"),
+        _int_bounds(q_end_arr, name="ends2"),
+        _int_bounds(ex_genome_start_arr, name="genome_start2"),
+        _int_bounds(ex_genome_end_arr, name="genome_end2"),
+    ]
+    min_v = min(m for m, _ in bounds)
+    max_v = max(m for _, m in bounds)
+    pos_t = _choose_pos_dtype(min_v, max_v)
 
-    def validate_groups(length, arr):
-        # If groups is None, produce a zero array, etc. 
-        if arr is None:
-            return np.zeros(length, dtype=np.uint32)
-        if len(arr) != length:
-            raise ValueError("Group array length mismatch")
-        return arr
+    ex_tx_u = np.zeros(left_len, dtype=np.uint32) if ex_tx is None else _normalize_groups(ex_tx, name="groups")
+    q_tx_u = np.zeros(right_len, dtype=np.uint32) if q_tx is None else _normalize_groups(q_tx, name="groups2")
+    ex_chr_u = _normalize_groups(ex_chr_code, name="chr_code2")
+    if len(ex_tx_u) != left_len or len(ex_chr_u) != left_len:
+        raise ValueError("Exon-side group arrays must match exon length.")
+    if len(q_tx_u) != right_len:
+        raise ValueError("Query-side group arrays must match query length.")
 
-    def _common_integer_dtype(*arrays):
-        """Pick the smallest integer dtype that can hold all array min/max."""
-        # same logic you had in _dispatch_binary
-        # or do the short version for brevity
-        return np.result_type(*[a.dtype for a in arrays if a is not None])
+    ex_start_u = _to_signed(ex_start, name="starts", target=pos_t)
+    ex_end_u = _to_signed(ex_end, name="ends", target=pos_t)
+    q_start_u = _to_signed(q_start_arr, name="starts2", target=pos_t)
+    q_end_u = _to_signed(q_end_arr, name="ends2", target=pos_t)
+    ex_genome_start_u = _to_signed(ex_genome_start_arr, name="genome_start2", target=pos_t)
+    ex_genome_end_u = _to_signed(ex_genome_end_arr, name="genome_end2", target=pos_t)
 
-    # ----------------------------------------------------------------------
-    # 1. Basic array-length checks
-    # ----------------------------------------------------------------------
-    left_len = check_array_lengths(ex_tx, ex_local_start, ex_local_end, ex_fwd,
-                                   ex_chr_code, ex_genome_start, ex_genome_end)
-    right_len = check_array_lengths(q_tx, q_start, q_end, q_fwd)
-
-    # validate group arrays, etc.
-    ex_tx_valid = validate_groups(left_len, ex_tx)
-    q_tx_valid  = validate_groups(right_len, q_tx)
-
-    # ----------------------------------------------------------------------
-    # 2. Identify original dtypes (for final cast)
-    # ----------------------------------------------------------------------
-    grp_orig = ex_tx_valid.dtype  # a guess if ex_tx != None
-    pos_orig = ex_local_start.dtype  # assume ex_local_start’s dtype is your reference
-
-    # ----------------------------------------------------------------------
-    # 3. Pick tightest dtype for groups + positions
-    # ----------------------------------------------------------------------
-    grp_tmp = _common_integer_dtype(ex_tx_valid, q_tx_valid)
-    pos_tmp = _common_integer_dtype(
-        ex_local_start, ex_local_end, q_start, q_end, 
-        ex_chr_code, ex_genome_start, ex_genome_end
+    grp_orig = np.asarray(ex_tx).dtype if ex_tx is not None else np.dtype(np.uint32)
+    pos_orig = ex_start.dtype
+    rust_fn, _, _ = _resolve_rust_fn(prefix, _CORE_GROUP_DTYPE, pos_t)
+    raw = rust_fn(
+        ex_tx_u,
+        ex_start_u,
+        ex_end_u,
+        q_tx_u,
+        q_start_u,
+        q_end_u,
+        ex_chr_u,
+        ex_genome_start_u,
+        ex_genome_end_u,
+        ex_fwd_arr.astype(np.bool_, copy=False),
+        q_fwd_arr.astype(np.bool_, copy=False),
     )
-
-    # optional slack check
-    slack = extra_kw.get("slack", 0)
-    # skip if you don't need it
-    # (like check_min_max_with_slack(...))
-
-    # ----------------------------------------------------------------------
-    # 4. Resolve which Rust function to call, same as _dispatch_binary
-    # ----------------------------------------------------------------------
-    # e.g. rust_fn, grp_t, pos_t = _resolve_rust_fn(prefix, grp_tmp, pos_tmp)
-    rust_fn, grp_t, pos_t = _resolve_rust_fn(prefix, grp_tmp, pos_tmp)
-
-    # We'll define what your kernel returns
-    roles = RETURN_SIGNATURES[prefix]  # e.g. ("grp", "pos", "pos", "strand")
-
-    # ----------------------------------------------------------------------
-    # 5. Convert arrays to the temporary dtype
-    # ----------------------------------------------------------------------
-    ex_tx_t         = ex_tx_valid.astype(grp_t, copy=False)
-    ex_local_start_t= ex_local_start.astype(pos_t, copy=False)
-    ex_local_end_t  = ex_local_end.astype(pos_t, copy=False)
-    ex_fwd_t        = ex_fwd  # bool doesn't need casting for Rust
-
-    q_tx_t          = q_tx_valid.astype(grp_t, copy=False)
-    q_start_t       = q_start.astype(pos_t, copy=False)
-    q_end_t         = q_end.astype(pos_t, copy=False)
-    q_fwd_t         = q_fwd  # bool
-
-    ex_chr_code_t   = ex_chr_code.astype(grp_t, copy=False)
-    ex_genome_start_t = ex_genome_start.astype(pos_t, copy=False)
-    ex_genome_end_t   = ex_genome_end.astype(pos_t, copy=False)
-
-    # ----------------------------------------------------------------------
-    # 6. Call the Rust function
-    # ----------------------------------------------------------------------
-    raw_out = rust_fn(
-        # left triple
-        ex_tx_t, ex_local_start_t, ex_local_end_t,
-        # right triple
-        q_tx_t, q_start_t, q_end_t,
-        # extras
-        ex_chr_code_t, ex_genome_start_t, ex_genome_end_t,
-        ex_fwd_t, q_fwd_t,
-    )
-
-    # ----------------------------------------------------------------------
-    # 7. Cast the outputs back
-    # same logic your cast_kernel_outputs uses
-    # roles might be ("grp", "pos", "pos", "strand")
-    return cast_kernel_outputs(prefix, raw_out, roles, grp_t, pos_t, grp_orig, pos_orig)
+    return _restore_outputs(prefix, raw, roles, grp_orig=grp_orig, pos_orig=pos_orig)
 
 def _groups_or_arange(groups, n, dtype=np.uint8):
     if groups is None:
