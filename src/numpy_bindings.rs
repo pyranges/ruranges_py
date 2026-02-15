@@ -1,3 +1,5 @@
+#![cfg(feature = "backend-numpy")]
+
 use std::collections::HashMap;
 use std::str::FromStr;
 
@@ -49,8 +51,8 @@ impl FromStr for Direction {
 }
 
 #[pymodule]
-#[pyo3(name = "ruranges_py")]
-fn ruranges_py(m: &Bound<'_, PyModule>) -> PyResult<()> {
+#[pyo3(name = "ruranges")]
+fn ruranges(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(map_to_global_numpy_u64_i64, m)?)?;
     m.add_function(wrap_pyfunction!(map_to_global_numpy_u32_i64, m)?)?;
     m.add_function(wrap_pyfunction!(map_to_global_numpy_u32_i32, m)?)?;

@@ -40,7 +40,7 @@ maturin develop --release
 
 Quick check:
 ```bash
-python -c "import ruranges_py; print(ruranges_py.__version__)"
+python -c "import ruranges; print(ruranges.__version__)"
 ```
 
 ---
@@ -68,7 +68,7 @@ Simple example:
 ```python
 import pandas as pd
 import numpy as np
-from ruranges_py import overlaps
+import ruranges
 
 df1 = pd.DataFrame({
     "chr": ["chr1", "chr1", "chr2"],
@@ -97,7 +97,7 @@ labels = combo.groupby(["chr", "strand"], sort=False).ngroup().astype(np.uint32)
 groups  = labels[:len(df1)]
 groups2 = labels[len(df1):]
 
-idx1, idx2 = overlaps(
+idx1, idx2 = ruranges.numpy.overlaps(
     starts=df1["start"].to_numpy(np.int32),
     ends=df1["end"].to_numpy(np.int32),
     starts2=df2["start"].to_numpy(np.int32),
@@ -138,14 +138,14 @@ print(df2.iloc[idx2])
 
 ```python
 import numpy as np
-from ruranges_py import nearest
+import ruranges
 
 starts  = np.array([1, 10, 30], dtype=np.int32)
 ends    = np.array([5, 15, 35], dtype=np.int32)
 starts2 = np.array([3, 20, 28], dtype=np.int32)
 ends2   = np.array([6, 25, 32], dtype=np.int32)
 
-idx1, idx2, dist = nearest(
+idx1, idx2, dist = ruranges.numpy.nearest(
     starts=starts, ends=ends,
     starts2=starts2, ends2=ends2,
     k=2,
@@ -172,14 +172,14 @@ Set direction to "forward" or "backward" to restrict to one side.
 
 ```python
 import numpy as np
-from ruranges_py import subtract
+import ruranges
 
 starts  = np.array([0, 10], dtype=np.int32)
 ends    = np.array([10, 20], dtype=np.int32)
 starts2 = np.array([5, 12], dtype=np.int32)
 ends2   = np.array([15, 18], dtype=np.int32)
 
-idx_keep, sub_starts, sub_ends = subtract(
+idx_keep, sub_starts, sub_ends = ruranges.numpy.subtract(
     starts, ends,
     starts2, ends2,
 )
@@ -216,5 +216,3 @@ Any function that needs strand expects a boolean array: True for the minus stran
 ## License
 
 Apache 2.0. See LICENSE for details.
-
-
