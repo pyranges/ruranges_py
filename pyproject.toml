@@ -18,8 +18,7 @@ version = "0.1.0"
 
 [tool.maturin]
 module-name = "ruranges.ruranges"
-# Build the extension with Cargo feature that enables pyo3/extension-module.
-features = ["python-module"]
+features = ["python-module", "backend-numpy"]
 
 authors = [
     { name = "Endre Bakken Stovner", email = "endrebak@pm.me" }
