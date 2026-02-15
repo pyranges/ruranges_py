@@ -1,7 +1,7 @@
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::{pyfunction, Py, PyResult, Python};
 
-use crate::tile::window_grouped;
+use ruranges_core::tile::window_grouped;
 
 macro_rules! define_window_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {
@@ -9,10 +9,10 @@ macro_rules! define_window_numpy {
         #[pyo3(signature = (chrs, starts, ends, negative_strand, window_size))]
         pub fn $fname(
             chrs: PyReadonlyArray1<$chr_ty>,
-            starts:          PyReadonlyArray1<$pos_ty>,
-            ends:            PyReadonlyArray1<$pos_ty>,
+            starts: PyReadonlyArray1<$pos_ty>,
+            ends: PyReadonlyArray1<$pos_ty>,
             negative_strand: PyReadonlyArray1<bool>,
-            window_size:     $pos_ty,
+            window_size: $pos_ty,
             py: Python<'_>,
         ) -> PyResult<(
             Py<PyArray1<usize>>,   // indices
@@ -29,9 +29,9 @@ macro_rules! define_window_numpy {
             );
 
             Ok((
-                idx      .into_pyarray(py).to_owned().into(),
-                w_starts .into_pyarray(py).to_owned().into(),
-                w_ends   .into_pyarray(py).to_owned().into(),
+                idx.into_pyarray(py).to_owned().into(),
+                w_starts.into_pyarray(py).to_owned().into(),
+                w_ends.into_pyarray(py).to_owned().into(),
             ))
         }
     };
@@ -45,6 +45,6 @@ define_window_numpy!(window_numpy_u32_i16, u32, i16);
 define_window_numpy!(window_numpy_u16_i64, u16, i64);
 define_window_numpy!(window_numpy_u16_i32, u16, i32);
 define_window_numpy!(window_numpy_u16_i16, u16, i16);
-define_window_numpy!(window_numpy_u8_i64,  u8,  i64);
-define_window_numpy!(window_numpy_u8_i32,  u8,  i32);
-define_window_numpy!(window_numpy_u8_i16,  u8,  i16);
+define_window_numpy!(window_numpy_u8_i64, u8, i64);
+define_window_numpy!(window_numpy_u8_i32, u8, i32);
+define_window_numpy!(window_numpy_u8_i16, u8, i16);

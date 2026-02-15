@@ -14,10 +14,10 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-version = "0.0.15"
+version = "0.1.0"
 
 [tool.maturin]
-module-name = "ruranges"
+module-name = "ruranges.ruranges"
 features = ["python-module", "backend-numpy"]
 
 authors = [
@@ -30,4 +30,4 @@ manylinux = "manylinux_2_28"
 strip = true
 
 [project.urls]
-Repository = "https://github.com/pyranges/ruranges"
+Repository = "https://github.com/pyranges/ruranges-py"

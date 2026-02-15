@@ -1,25 +1,26 @@
 [package]
-name = "ruranges"
-version = "0.1.0"
+name = "ruranges-py"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 name = "ruranges"
 crate-type = ["cdylib", "rlib"]
+path = "src/bindings/lib.rs"
 
 [features]
+# Keep default backend as NumPy.
 default = ["backend-numpy"]
 backend-numpy = ["dep:numpy"]
+# Enable this feature for Python extension builds.
 python-module = ["pyo3/extension-module"]
 
 [dependencies]
-radsort = "0.1.1"
-rustc-hash = "2.1.0"
-num-traits = "0.2.19"
+# Core interval algorithms now live in the separate Rust crate/repo.
+ruranges-core = { version = "0.1.2" }
 
+# Python bindings.
+rustc-hash = "2.1.0"
 pyo3 = { version = "0.26.0", optional = false }
 numpy = { version = "0.26.0", optional = true }
-
-# polars = { version = "0.46.0", features = ["csv", "lazy", "dtype-categorical"], optional = false}
-# rust-htslib = { version = "0.49.0", optional = false}
