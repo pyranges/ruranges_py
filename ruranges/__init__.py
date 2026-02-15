@@ -1,6 +1,6 @@
 from importlib.metadata import version
 
-__version__: str = version("ruranges-py")
+__version__: str = version("ruranges")
 
 from . import numpy
 

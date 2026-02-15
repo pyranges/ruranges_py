@@ -8,14 +8,14 @@ macro_rules! define_complement_numpy {
     ($fname:ident, $chr_ty:ty, $pos_ty:ty) => {
         #[pyfunction]
         #[pyo3(signature = (
-                    groups,
-                    starts,
-                    ends,
-                    chrom_len_ids,
-                    chrom_lens,
-                    slack     = 0,
-                    include_first_interval = false
-                ))]
+                                    groups,
+                                    starts,
+                                    ends,
+                                    chrom_len_ids,
+                                    chrom_lens,
+                                    slack     = 0,
+                                    include_first_interval = false
+                                ))]
         #[allow(non_snake_case)]
         pub fn $fname(
             py: Python<'_>,
@@ -66,13 +66,5 @@ macro_rules! define_complement_numpy {
 }
 
 // ── concrete instantiations ───────────────────────────────────────────
-define_complement_numpy!(complement_numpy_u64_i64, u64, i64);
-define_complement_numpy!(complement_numpy_u32_i64, u32, i64);
 define_complement_numpy!(complement_numpy_u32_i32, u32, i32);
-define_complement_numpy!(complement_numpy_u32_i16, u32, i16);
-define_complement_numpy!(complement_numpy_u16_i64, u16, i64);
-define_complement_numpy!(complement_numpy_u16_i32, u16, i32);
-define_complement_numpy!(complement_numpy_u16_i16, u16, i16);
-define_complement_numpy!(complement_numpy_u8_i64, u8, i64);
-define_complement_numpy!(complement_numpy_u8_i32, u8, i32);
-define_complement_numpy!(complement_numpy_u8_i16, u8, i16);
+define_complement_numpy!(complement_numpy_u32_i64, u32, i64);

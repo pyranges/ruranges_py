@@ -8,7 +8,7 @@ ruranges-py is the Python bindings package for `ruranges-core`, a separate Rust 
 
 * Speed: heavy kernels in Rust compiled with --release.
 * Zero copy: results are numpy views whenever possible.
-* Flexible dtypes: unsigned int8/16/32/64 for group ids, signed ints for coordinates. The wrapper chooses the smallest safe dtype automatically.
+* Flexible dtypes: integer-like inputs are normalized to a compact kernel core (`uint32` groups, `int32`/`int64` coordinates) and converted back when possible.
 * Stateless: plain functions, no classes.
 
 ---
@@ -23,11 +23,8 @@ pip install git+https://github.com/your-org/ruranges-py.git
 
 ### Development environment (from local checkout)
 
-`ruranges-py` expects the sibling core repo at `../ruranges-core` (third repo):
-
 ```bash
 cd ~/code
-git clone <your-remote>/ruranges-core
 git clone <your-remote>/ruranges-py
 
 cd ~/code/ruranges-py
@@ -200,8 +197,9 @@ Because interval 1 is broken into two pieces it appears twice in idx\_keep.
 
 ### Supported dtypes
 
-* Groups: uint8, uint16, uint32, uint64
-* Coordinates: int8, int16, int32, int64
+* Groups: integer-like NumPy dtypes (`int*`, `uint*`, `bool`) are accepted if values are non-negative and fit in `uint32`.
+* Coordinates: integer-like NumPy dtypes (`int*`, `uint*`, `bool`) are accepted. Inputs are normalized (offset-shifted when needed) to internal signed kernels.
+* Internal kernel core: `group = uint32`, `position = int32 | int64`.
 
 ### Do I need sorted intervals?
 

@@ -30,13 +30,5 @@ macro_rules! define_cluster_numpy {
 }
 
 // ── concrete instantiations ────────────────────────────────────────────
-define_cluster_numpy!(cluster_numpy_u64_i64, u64, i64);
-define_cluster_numpy!(cluster_numpy_u32_i64, u32, i64);
 define_cluster_numpy!(cluster_numpy_u32_i32, u32, i32);
-define_cluster_numpy!(cluster_numpy_u32_i16, u32, i16);
-define_cluster_numpy!(cluster_numpy_u16_i64, u16, i64);
-define_cluster_numpy!(cluster_numpy_u16_i32, u16, i32);
-define_cluster_numpy!(cluster_numpy_u16_i16, u16, i16);
-define_cluster_numpy!(cluster_numpy_u8_i64, u8, i64);
-define_cluster_numpy!(cluster_numpy_u8_i32, u8, i32);
-define_cluster_numpy!(cluster_numpy_u8_i16, u8, i16);
+define_cluster_numpy!(cluster_numpy_u32_i64, u32, i64);

@@ -36,6 +36,5 @@ macro_rules! define_tile_numpy {
 }
 
 // ── concrete instantiations ────────────────────────────────────────────
-define_tile_numpy!(tile_numpy_i64, i64);
 define_tile_numpy!(tile_numpy_i32, i32);
-define_tile_numpy!(tile_numpy_i16, i16);
+define_tile_numpy!(tile_numpy_i64, i64);
