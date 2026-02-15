@@ -1,4 +1,8 @@
-#![cfg(feature = "backend-numpy")]
+#[cfg(not(feature = "backend-numpy"))]
+compile_error!("ruranges-py requires the `backend-numpy` feature.");
+
+#[cfg(feature = "backend-numpy")]
+pub mod numpy_bindings;
 
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -8,27 +12,25 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
-use bindings::numpy_bindings::boundary_numpy::*;
-use bindings::numpy_bindings::cluster_numpy::*;
-use bindings::numpy_bindings::complement_numpy::*;
-use bindings::numpy_bindings::complement_overlaps_numpy::*;
-use bindings::numpy_bindings::count_overlaps_numpy::*;
-use bindings::numpy_bindings::extend_numpy::*;
-use bindings::numpy_bindings::genome_bounds_numpy::*;
-use bindings::numpy_bindings::group_cumsum_numpy::*;
-use bindings::numpy_bindings::map_to_global_numpy::*;
-use bindings::numpy_bindings::max_disjoint_numpy::*;
-use bindings::numpy_bindings::merge_numpy::*;
-use bindings::numpy_bindings::nearest_numpy::*;
-use bindings::numpy_bindings::overlaps_numpy::*;
-use bindings::numpy_bindings::sort_intervals_numpy::*;
-use bindings::numpy_bindings::spliced_subsequence_numpy::*;
-use bindings::numpy_bindings::split_numpy::*;
-use bindings::numpy_bindings::subtract_numpy::*;
-use bindings::numpy_bindings::tile_numpy::*;
-use bindings::numpy_bindings::window_numpy::*;
-
-use crate::bindings;
+use crate::numpy_bindings::boundary_numpy::*;
+use crate::numpy_bindings::cluster_numpy::*;
+use crate::numpy_bindings::complement_numpy::*;
+use crate::numpy_bindings::complement_overlaps_numpy::*;
+use crate::numpy_bindings::count_overlaps_numpy::*;
+use crate::numpy_bindings::extend_numpy::*;
+use crate::numpy_bindings::genome_bounds_numpy::*;
+use crate::numpy_bindings::group_cumsum_numpy::*;
+use crate::numpy_bindings::map_to_global_numpy::*;
+use crate::numpy_bindings::max_disjoint_numpy::*;
+use crate::numpy_bindings::merge_numpy::*;
+use crate::numpy_bindings::nearest_numpy::*;
+use crate::numpy_bindings::overlaps_numpy::*;
+use crate::numpy_bindings::sort_intervals_numpy::*;
+use crate::numpy_bindings::spliced_subsequence_numpy::*;
+use crate::numpy_bindings::split_numpy::*;
+use crate::numpy_bindings::subtract_numpy::*;
+use crate::numpy_bindings::tile_numpy::*;
+use crate::numpy_bindings::window_numpy::*;
 
 #[derive(Debug, PartialEq)]
 enum Direction {

@@ -7,6 +7,7 @@ edition = "2021"
 [lib]
 name = "ruranges"
 crate-type = ["cdylib", "rlib"]
+path = "src/bindings/lib.rs"
 
 [features]
 # Keep default backend as NumPy.
