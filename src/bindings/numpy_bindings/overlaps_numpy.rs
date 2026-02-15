@@ -47,7 +47,7 @@ macro_rules! define_chromsweep_numpy {
                 .collect();
 
             if sort_output {
-                radsort::sort_by_key(&mut pairs, |(a, b)| (*a, *b));
+                pairs.sort_unstable_by_key(|(a, b)| (*a, *b));
             }
 
             let (idx1, idx2): (Vec<u32>, Vec<u32>) = pairs.into_iter().unzip();
