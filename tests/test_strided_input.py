@@ -76,19 +76,6 @@ CASES = {
     "genome_bounds": lambda lo: rn.genome_bounds(
         groups=groups(), starts=starts(lo), ends=ends(lo), chrom_length=strided([lo + 100, lo + 100])
     ),
-    "map_to_global": lambda lo: rn.map_to_global(
-        starts=starts(0),
-        ends=ends(0),
-        groups=groups(),
-        strand=negative_strand(),
-        starts2=starts(0),
-        ends2=ends(0),
-        groups2=groups(),
-        chr_code2=groups(),
-        genome_start2=starts(lo),
-        genome_end2=ends(lo),
-        strand2=negative_strand(),
-    ),
     "sort_groups": lambda lo: rn.sort_groups(groups()),
     "fold_ranks": lambda lo: rn.fold_ranks(groups(), 1, groups(), 1),
 }
@@ -98,3 +85,21 @@ CASES = {
 @pytest.mark.parametrize("name", CASES)
 def test_kernel_accepts_strided_input(name, lo):
     CASES[name](lo)
+
+
+@pytest.mark.parametrize("lo", [1, BIG])
+def test_strided_projection_checks_coordinates_and_query_attribution(lo):
+    # One query spans two exons. Exchanging the tables must fail this check.
+    idx, out_starts, out_ends, strand = rn.map_to_global(
+        starts=strided([1, 3]), ends=strided([5, 6]), groups=strided([7, 7], np.uint32),
+        strand=strided([True, True], np.bool_),
+        starts2=strided([0, 2, 6]), ends2=strided([2, 6, 8]),
+        groups2=strided([7, 7, 7], np.uint32), chr_code2=strided([1, 1, 1], np.uint32),
+        genome_start2=strided([lo, lo + 10, lo + 20]),
+        genome_end2=strided([lo + 2, lo + 14, lo + 22]),
+        strand2=strided([True, True, True], np.bool_),
+    )
+    np.testing.assert_array_equal(idx, [0, 0, 1])
+    np.testing.assert_array_equal(out_starts, [lo + 1, lo + 10, lo + 11])
+    np.testing.assert_array_equal(out_ends, [lo + 2, lo + 13, lo + 14])
+    np.testing.assert_array_equal(strand, [True, True, True])

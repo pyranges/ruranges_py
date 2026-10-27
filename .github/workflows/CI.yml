@@ -19,6 +19,27 @@ permissions:
   contents: read
 
 jobs:
+  correctness:
+    name: Python correctness (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install development dependencies
+        run: python -m pip install maturin numpy pytest
+      - name: Build and install the local package
+        run: python -m pip install .
+      - name: Check the installed wheel's public NumPy results
+        working-directory: ${{ runner.temp }}
+        run: python -m pytest --import-mode=importlib -q "$GITHUB_WORKSPACE/tests"
+
   linux:
     runs-on: ${{ matrix.platform.runner }}
     strategy:
@@ -157,7 +178,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' }}
-    needs: [linux, musllinux, windows, macos, sdist]
+    needs: [correctness, linux, musllinux, windows, macos, sdist]
     permissions:
       # Use to sign the release artifacts
       id-token: write

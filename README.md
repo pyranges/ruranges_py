@@ -280,3 +280,11 @@ Any function that needs strand expects a boolean array: True for the minus stran
 ## License
 
 Apache 2.0. See LICENSE for details.
+
+### Transcript projection
+
+`ruranges.numpy.map_to_global` accepts queries first and exon annotations in
+the `*2` arrays. Inputs can be unsorted: the core sorts them while preserving
+original row indices and clips queries to exon coverage. Pass
+`return_exon_indices=True` to receive a fifth result array naming the original
+annotation row for each projected fragment. The default still returns four arrays.

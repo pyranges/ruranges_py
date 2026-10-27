@@ -65,3 +65,49 @@ def test_query_attribution_across_transcripts_with_strided_inputs(shift):
     np.testing.assert_array_equal(starts, np.array([102, 104, 204]) + shift)
     np.testing.assert_array_equal(ends, np.array([105, 107, 207]) + shift)
     np.testing.assert_array_equal(strand, [True, False, False])
+
+
+@pytest.mark.parametrize("dtype", [np.int32, np.int64])
+@pytest.mark.parametrize("sort_output", [False, True])
+def test_unsorted_projection_retains_original_query_and_exon_indices(dtype, sort_output):
+    out = map_to_global(
+        starts=np.array([5, 5, 0], dtype=dtype),
+        ends=np.array([15, 15, 2], dtype=dtype),
+        groups=np.array([7, 1, 7]), strand=np.array([True, False, True]),
+        starts2=np.array([10, 0, 0, 10], dtype=dtype),
+        ends2=np.array([20, 10, 10, 20], dtype=dtype),
+        groups2=np.array([7, 1, 7, 1]), chr_code2=np.array([1, 1, 1, 1]),
+        genome_start2=np.array([200, 1000, 100, 2000], dtype=dtype),
+        genome_end2=np.array([210, 1010, 110, 2010], dtype=dtype),
+        strand2=np.array([True, True, True, True]),
+        sort_output=sort_output, return_exon_indices=True,
+    )
+    expected = [(0, 200, 205, True, 0), (0, 105, 110, True, 2),
+                (1, 1005, 1010, False, 1), (1, 2000, 2005, False, 3),
+                (2, 100, 102, True, 2)]
+    actual = list(zip(*(a.tolist() for a in out)))
+    assert (actual if sort_output else sorted(actual)) == (expected if sort_output else sorted(expected))
+
+
+@pytest.mark.parametrize("forward", [False, True])
+@pytest.mark.parametrize("query_start,query_end,local_start,local_end", [
+    (-5, 5, 0, 10), (0, 5, 10, 20), (5, 15, 10, 20), (15, 25, 10, 20),
+])
+def test_projection_clips_both_exon_boundaries(forward, query_start, query_end, local_start, local_end):
+    out = map_to_global(
+        starts=np.array([query_start]), ends=np.array([query_end]),
+        groups=np.array([7]), strand=np.array([True]),
+        starts2=np.array([local_start]), ends2=np.array([local_end]),
+        groups2=np.array([7]), chr_code2=np.array([1]),
+        genome_start2=np.array([100]), genome_end2=np.array([110]),
+        strand2=np.array([forward]),
+    )
+    lo, hi = max(query_start, local_start), min(query_end, local_end)
+    if lo >= hi:
+        assert all(a.size == 0 for a in out)
+    else:
+        expected = (100 + lo - local_start, 100 + hi - local_start) if forward else (110 - hi + local_start, 110 - lo + local_start)
+        np.testing.assert_array_equal(out[0], [0])
+        np.testing.assert_array_equal(out[1], [expected[0]])
+        np.testing.assert_array_equal(out[2], [expected[1]])
+        np.testing.assert_array_equal(out[3], [forward])
