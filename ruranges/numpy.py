@@ -147,8 +147,9 @@ def map_to_global(
     """
     Vectorised transcript-to-genome projection.
 
-    All arrays must be 1-D and already sorted per transcript by
-    (local_start).  The *strand* arrays encode '+' as True and '−' as False.
+    All arrays must be 1-D. Each table must be sorted by transcript ID and
+    local start. The first table contains queries; the ``*2`` arrays contain
+    the exon annotation. The *strand* arrays encode '+' as True and '−' as False.
 
     Returns
     -------
@@ -162,8 +163,8 @@ def map_to_global(
 
     return _dispatch_map_global_binary(
         "map_to_global_numpy",
-        groups,  starts,  ends,  strand,
         groups2, starts2, ends2, strand2,
+        groups,  starts,  ends,  strand,
         chr_code2, genome_start2, genome_end2,
         sort_output=sort_output,
     )
@@ -1641,7 +1642,7 @@ def _dispatch_map_global_binary(
     ex_genome_end_u = _to_signed(ex_genome_end_arr, name="genome_end2", target=pos_t)
 
     grp_orig = np.asarray(ex_tx).dtype if ex_tx is not None else np.dtype(np.uint32)
-    pos_orig = ex_start.dtype
+    pos_orig = q_start_arr.dtype
     rust_fn, _, _ = _resolve_rust_fn(prefix, _CORE_GROUP_DTYPE, pos_t)
     raw = rust_fn(
         ex_tx_u,
