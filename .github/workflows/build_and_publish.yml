@@ -6,7 +6,7 @@ on:
       publish:
         description: Publish the verified artifacts to PyPI
         required: true
-        default: false
+        default: true
         type: boolean
 
 permissions:
