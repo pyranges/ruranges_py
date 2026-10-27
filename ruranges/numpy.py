@@ -143,13 +143,16 @@ def map_to_global(
     genome_end2:   NDArray[RangeInt],
     strand2:   NDArray[np.bool_],
     sort_output: bool = True,
-) -> tuple[NDArray, NDArray, NDArray, NDArray]:
+    return_exon_indices: bool = False,
+) -> tuple[NDArray, ...]:
     """
     Vectorised transcript-to-genome projection.
 
-    All arrays must be 1-D. Each table must be sorted by transcript ID and
-    local start. The first table contains queries; the ``*2`` arrays contain
-    the exon annotation. The *strand* arrays encode '+' as True and '−' as False.
+    All arrays must be 1-D. Rust sorts either table when needed. The first
+    table contains queries; the ``*2`` arrays contain non-overlapping local
+    exon spans. Only query/exon intersections are projected. The *strand*
+    arrays encode '+' as True and '−' as False. With ``sort_output=True``,
+    fragments follow original query and annotation row order.
 
     Returns
     -------
@@ -159,6 +162,9 @@ def map_to_global(
         Genomic coordinates of the mapped pieces.
     g_strand_bool : bool
         True ⇒ '+', False ⇒ '−'.
+    exon_idx : uint32, optional
+        When ``return_exon_indices=True``, a fifth array identifies the
+        original annotation row producing each fragment.
     """
 
     return _dispatch_map_global_binary(
@@ -167,6 +173,7 @@ def map_to_global(
         groups,  starts,  ends,  strand,
         chr_code2, genome_start2, genome_end2,
         sort_output=sort_output,
+        return_exon_indices=return_exon_indices,
     )
 
 
@@ -1594,6 +1601,8 @@ def _dispatch_map_global_binary(
     **extra_kw
 ):
     roles = RETURN_SIGNATURES[prefix]
+    if extra_kw.get("return_exon_indices", False):
+        roles += ("index",)
     ex_start = _as_1d_array(ex_local_start, name="starts")
     ex_end = _as_1d_array(ex_local_end, name="ends")
     q_start_arr = _as_1d_array(q_start, name="starts2")

@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 # Keep this synchronized with `package.version` in Cargo.toml.
-version = "0.2.8"
+version = "0.2.9"
 
 [tool.maturin]
 module-name = "ruranges.ruranges"
