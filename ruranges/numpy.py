@@ -1476,6 +1476,10 @@ def _dispatch_unary(
 
     if prefix == "complement_numpy":
         chrom_ids = _normalize_groups(extra_kw["chrom_len_ids"], name="chrom_len_ids")
+        if groups is None:
+            if len(chrom_ids) != 1:
+                raise ValueError("`groups=None` requires exactly one chromosome in `chrom_len_ids`.")
+            groups = np.full(len(starts_arr), chrom_ids[0], dtype=np.uint32)
         extra_kw["chrom_len_ids"] = chrom_ids
         chrom_lens = _as_1d_array(extra_kw["chrom_lens"], name="chrom_lens")
         pos_extra_arrays.append(("chrom_lens", chrom_lens))
